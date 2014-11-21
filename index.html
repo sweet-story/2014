@@ -1,0 +1,252 @@
+
+<!doctype html>
+<!--[if IE 9]><html class="lt-ie10" lang="en" > <![endif]-->
+<html class="no-js" lang="en" data-useragent="Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; Trident/6.0)">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Foundation Template | Store</title>
+<meta name="description" content="Documentation and reference library for ZURB Foundation. JavaScript, CSS, components, grid and more."/>
+<meta name="author" content="ZURB, inc. ZURB network also includes zurb.com"/>
+
+<!-- // JS -->
+<script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0/handlebars.js"></script>
+<script src="assets/js/underscore-min.js"></script>
+
+
+<meta name="copyright" content="ZURB, inc. Copyright (c) 2014"/>
+<link rel="stylesheet" href="assets/css/foundation.css"/>
+<link rel="stylesheet" href="assets/css/custom.css"/>
+<script src="assets/js/modernizr.js"></script>
+</head>
+<body>
+<div class="row">
+<div class="large-12 columns">
+ 
+<div class="row">
+<div class="large-12 columns">
+<nav class="top-bar" data-topbar>
+<ul class="title-area">
+ 
+<li class="name">
+<h1><a href="#">Top Bar Title</a></h1>
+</li>
+<li class="toggle-topbar menu-icon">
+<a href="#"><span>menu</span></a>
+</li>
+</ul>
+<section class="top-bar-section">
+ 
+<ul class="right">
+<!--  -->
+<li class="divider"></li>
+<li class="has-dropdown">
+<a href="#" id="top">Популярные</a>
+<ul class="dropdown">
+<li>
+<a href="#" id="cheap">От дешевых</a>
+</li>
+<li>
+<a href="#" id="expensive">От дорогих</a>
+</li>
+<li>
+<a href="#" id="weight">По весу</a>
+</li>
+
+</ul>
+</li>
+</ul>
+</section>
+</nav> 
+</div>
+</div> 
+<div class="row">
+ 
+<div class="large-4 small-12 columns">
+<img src="http://placehold.it/500x500&amp;text=Logo">
+<div class="hide-for-small panel">
+<h3>Header</h3>
+<h5 class="subheader">Risus ligula, aliquam nec fermentum vitae, sollicitudin eget urna. Donec dignissim
+nibh fermentum odio ornare sagittis.</h5>
+</div><a href="#">
+<div class="panel callout radius">
+<h6>99&nbsp; items in your cart</h6>
+</div></a>
+</div> 
+ 
+<div class="large-8 columns">
+
+<div class="row" id="Main_view">
+
+
+
+</div> 
+ 
+<div class="row">
+<div class="large-12 columns">
+<div class="panel">
+<div class="row">
+<div class="large-2 small-6 columns"><img src="http://placehold.it/300x300&amp;text=Site%20Owner"></div>
+<div class="large-10 small-6 columns">
+<strong>This Site Is Managed By</strong>
+<hr>
+Risus ligula, aliquam nec fermentum vitae, sollicitudin eget urna. Donec dignissim nibh fermentum
+odio ornare sagittis
+</div>
+</div>
+</div>
+</div> 
+</div>
+</div>
+</div> 
+<footer class="row">
+<div class="large-12 columns">
+<hr>
+<div class="row">
+<div class="large-6 columns">
+<p>© Copyright no one at all. Go to town.</p>
+</div>
+<div class="large-6 columns">
+<ul class="inline-list right">
+<li>
+<a href="#">Link 1</a>
+</li>
+<li>
+<a href="#">Link 2</a>
+</li>
+<li>
+<a href="#">Link 3</a>
+</li>
+<li>
+<a href="#">Link 4</a>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</footer> 
+</div>
+</div>
+
+<script src="assets/js/jquery.js"></script>
+<script src="assets/js/foundation.min.js"></script>
+<script>
+    $(document).foundation();
+  </script>
+
+<script>
+      $(document).foundation();
+
+      var doc = document.documentElement;
+      doc.setAttribute('data-useragent', navigator.userAgent);
+    </script>
+</body>
+</html>
+
+
+
+<script id="cards-template" type="text/x-handlebars-template">
+{{#each []}}
+  <div class="large-4 small-6 columns">
+  
+    <img src={{url}}>
+    <div class="panel">
+      <h5>{{item_name}}</h5>
+      <h6 class="subheader">{{amount}} грн.</h6>
+      <h6 class="subheader">{{weight}} грамм.</h6>
+    </div>
+
+  </div>
+{{/each}}
+</script>
+
+<script>
+
+  var App = {
+    View: {},
+    Data: {
+    	_allowed_sorter_types: function () {
+    	
+    	  return ["cheap", "expensive", "weight", "top"];
+    	},
+    	sorter: function (sort_type) {
+
+    		var sorters = {
+    			expensive: function () {
+
+    			  return App.Data.storage().sort(function (a, b) { return b.amount - a.amount; });
+    			},
+
+    			cheap: function () { return sorters.expensive().reverse(); },
+
+    			weight: function () { return App.Data.storage().sort(function (a, b) { return b.weight - a.weight; });},
+
+    			top: function () { console.log("top2");
+    				return App.Data.storage().filter(function (a) { return a.amount > 40; });}
+    		};
+    		return sorters[sort_type]();
+    	},
+    	  
+    	
+    },
+    template: {
+    	cards: $("#cards-template").html(),
+
+    }
+  };
+
+  App.View.render = function (source, data, view) {
+    // console.log(source, data, view);
+    var template = Handlebars.compile(source);
+    var html = template(data);
+    $(view).html(html);
+  }
+
+  App.Data.storage = function () {
+
+  	return [
+	  	{item_name: "App template 0", amount: 25.5, url: "http://placehold.it/500x500&amp;text=Thumbnail", weight: 122},
+	  	{item_name: "App template 1", amount: 100, url: "http://placehold.it/500x500&amp;text=Thumbnail",  weight: 950},
+	  	{item_name: "App template 2", amount: 45, url: "http://placehold.it/500x500&amp;text=Thumbnail",  weight: 350},
+	  	{item_name: "App template 3", amount: 38, url: "http://placehold.it/500x500&amp;text=Thumbnail",  weight: 220},
+	  	{item_name: "App template 1", amount: 100, url: "http://placehold.it/500x500&amp;text=Thumbnail",  weight: 950},
+	  	{item_name: "App template 2", amount: 27, url: "http://placehold.it/500x500&amp;text=Thumbnail",  weight: 180},
+	  	{item_name: "App template 1", amount: 109, url: "http://placehold.it/500x500&amp;text=Thumbnail",  weight: 840},
+	  	{item_name: "App template 2", amount: 41, url: "http://placehold.it/500x500&amp;text=Thumbnail",  weight: 418},
+	  	{item_name: "App template 1", amount: 49, url: "http://placehold.it/500x500&amp;text=Thumbnail",  weight: 567},
+	  	{item_name: "App template 2", amount: 62, url: "http://placehold.it/500x500&amp;text=Thumbnail",  weight: 710},
+	  	{item_name: "App template 1", amount: 46, url: "http://placehold.it/500x500&amp;text=Thumbnail",  weight: 380},
+	  	{item_name: "App template 2", amount: 55, url: "http://placehold.it/500x500&amp;text=Thumbnail",  weight: 412},
+	  	{item_name: "App template 1", amount: 12, url: "http://placehold.it/500x500&amp;text=Thumbnail",  weight: 67},
+	  	{item_name: "App template 2", amount: 131, url: "http://placehold.it/500x500&amp;text=Thumbnail",  weight: 1012}
+
+  	];
+
+  }
+
+
+
+
+</script>
+
+<script>
+    App.View.render(App.template.cards, App.Data.storage(), $("#Main_view"));
+
+
+
+    	$("li.has-dropdown").on("click", function (e) {
+
+    		var sorter_type = e.target.id;
+    		console.log(sorter_type);
+    		if(App.Data._allowed_sorter_types().indexOf(sorter_type) > -1) {
+    			
+    			App.View.render(App.template.cards, App.Data.sorter(sorter_type), $("#Main_view"));
+    		};
+    		
+    	});
+
+
+</script>
+
+
