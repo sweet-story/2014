@@ -1,0 +1,65 @@
+<!DOCTYPE html> 
+<html>
+<head>
+<script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0/handlebars.js"></script>
+  <meta charset="utf-8">
+  <title>JS Bin</title>
+  <script>
+  
+  var App = {
+    View: {},
+    Data: {}
+  };
+
+  App.View.render = function (source, data, view) {
+    console.log(source, data, view);
+    var template = Handlebars.compile(source);
+    var html = template(data);
+    $(view).html(html);
+  }
+
+  App.Data.storage = { cards: [{title: "App template", body: "Body text"}, {title: "App template 1", body: "Body text 1"}] };
+  App.Data.get = function (param) {
+    var data = App.Data.storage;
+    data.new = param;
+    return data;
+  }
+  
+</script>
+</head>
+<body>
+<div id="Main_view"></div>
+
+</body>
+</html>
+
+
+
+
+
+
+<script id="entry-template" type="text/x-handlebars-template">
+  <div class="entry">
+  {{#each cards}}
+  <h1>{{title}}</h1>
+  <div class="body">
+    {{body}}
+  </div>
+  <p>{{new}}</p>
+  {{/each}}
+</div>
+</script>
+
+<script>
+  Handlebars.registerHelper('list', function(items, options) {
+  var out = "<ul>";
+
+  for(var i=0, l=items.length; i<l; i++) {
+    out = out + "<li>" + options.fn(items[i]) + "</li>";
+  }
+
+  return out + "</ul>";
+});
+  App.View.render($("#entry-template").html(), App.Data.get("min-max"), $("#Main_view"));
+</script>
