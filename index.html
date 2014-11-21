@@ -26,39 +26,32 @@
  
 <div class="row">
 <div class="large-12 columns">
-<nav class="top-bar" data-topbar>
-<ul class="title-area">
- 
-<li class="name">
-<h1><a href="#">Top Bar Title</a></h1>
-</li>
-<li class="toggle-topbar menu-icon">
-<a href="#"><span>menu</span></a>
-</li>
-</ul>
-<section class="top-bar-section">
- 
-<ul class="right">
-<!--  -->
-<li class="divider"></li>
-<li class="has-dropdown">
-<a href="#" id="top">Популярные</a>
-<ul class="dropdown">
-<li>
-<a href="#" id="cheap">От дешевых</a>
-</li>
-<li>
-<a href="#" id="expensive">От дорогих</a>
-</li>
-<li>
-<a href="#" id="weight">По весу</a>
-</li>
 
-</ul>
-</li>
-</ul>
-</section>
-</nav> 
+<nav class="top-bar" data-topbar role="navigation">
+  <ul class="title-area">
+    <li class="name">
+      <h1><a href="#">My Site</a></h1>
+    </li>
+     <!-- Remove the class "menu-icon" to get rid of menu icon. Take out "Menu" to just have icon alone -->
+    <li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
+  </ul>
+
+  <section class="top-bar-section">
+    <!-- Right Nav Section -->
+    <ul class="right">
+      <li class="active" id="top"><a href="#">Популярные</a></li>
+      <li id="cheap"><a href="#cheap">От дешевых</a></li>
+      <li id="expensive"><a href="#expensive">От дорогих</a></li>
+      <li id="weight"><a href="#weight">От тяжелых</a></li>
+    </ul>
+
+    <!-- Left Nav Section -->
+    <ul class="left">
+      <li><a href="#">Left Nav Button</a></li>
+    </ul>
+  </section>
+</nav>
+
 </div>
 </div> 
 <div class="row">
@@ -83,6 +76,27 @@ nibh fermentum odio ornare sagittis.</h5>
 
 </div> 
  
+<!-- <div class="row">
+  <div class="small-5 small-push-7 medium-7 medium-push-5 columns"><img src="http://placehold.it/300x300&amp;text=Site%20Owner"></div>
+  <div class="small-7 small-pull-5 medium-5 medium-pull-7 columns"><img src="http://placehold.it/300x300&amp;text=Site%20Owner"></div>
+</div>
+<div class="row">
+  <div class="small-2 large-4 columns">
+    Поклади в нього
+такі цукерочки:
+«АВК» Бурундучок».................................................3 шт
+«Аромат сонця».....................................................2 шт
+«Весняна гостя».......................................................2 шт
+«Emilio» смак англійський тоффі»............1 шт
+«Emilio» смак крем-вершки»............................1 шт
+«Emilio» смак шоколад з молоком»...........1 шт
+«Королівський шарм» з мигдальною начинкою...1 шт
+ВСЬОГО..................................................11 шт
+  </div>
+  <div class="small-4 large-4 columns">...</div>
+  <div class="small-6 large-4 columns">...</div>
+</div> -->
+
 <div class="row">
 <div class="large-12 columns">
 <div class="panel">
@@ -164,38 +178,68 @@ odio ornare sagittis
 <script>
 
   var App = {
+    init: function () {
+
+      App.Router.change();
+      
+
+      $(window).on("hashchange", function () {
+      
+      App.Router.change();
+    });
+      
+    }, 
+    Router: {},
     View: {},
     Data: {
-    	_allowed_sorter_types: function () {
-    	
-    	  return ["cheap", "expensive", "weight", "top"];
-    	},
-    	sorter: function (sort_type) {
+      _allowed_sorter_types: function () {
+      
+        return ["cheap", "expensive", "weight", ""];
+      },
+      sorter: function (sort_type) {
 
-    		var sorters = {
-    			expensive: function () {
+        var sorters = {
+          expensive: function () {
 
-    			  return App.Data.storage().sort(function (a, b) { return b.amount - a.amount; });
-    			},
+            return App.Data.storage().sort(function (a, b) { return b.amount - a.amount; });
+          },
 
-    			cheap: function () { return sorters.expensive().reverse(); },
+          cheap: function () { return sorters.expensive().reverse(); },
 
-    			weight: function () { return App.Data.storage().sort(function (a, b) { return b.weight - a.weight; });},
+          weight: function () { return App.Data.storage().sort(function (a, b) { return b.weight - a.weight; });},
 
-    			top: function () { console.log("top2");
-    				return App.Data.storage().filter(function (a) { return a.amount > 40; });}
-    		};
-    		return sorters[sort_type]();
-    	},
-    	  
-    	
+          default: function () { 
+            return App.Data.storage().filter(function (a) { return a.amount > 40; });}
+        };
+
+        if(!sort_type) {
+          return sorters["default"]();
+        };
+        return sorters[sort_type]();
+      },
+        
+      
     },
     template: {
-    	cards: $("#cards-template").html(),
+      cards: $("#cards-template").html(),
 
     }
   };
 
+  App.Router.change = function () {
+
+    var url = location.hash.slice(1);
+    // console.log(url.length);
+    if(App.Data._allowed_sorter_types().indexOf(url) > -1) {
+      App.View.render(App.template.cards, App.Data.sorter(url), $("#Main_view"));
+      $(".top-bar-section ul li").removeClass();
+      $("#"+url).addClass("active");
+    } else {
+      location.hash = "";
+      //App.View.render(App.template.cards, App.Data.sorter("top"), $("#Main_view"));
+    };
+
+  };
   App.View.render = function (source, data, view) {
     // console.log(source, data, view);
     var template = Handlebars.compile(source);
@@ -205,23 +249,23 @@ odio ornare sagittis
 
   App.Data.storage = function () {
 
-  	return [
-	  	{item_name: "App template 0", amount: 25.5, url: "http://placehold.it/500x500&amp;text=Thumbnail", weight: 122},
-	  	{item_name: "App template 1", amount: 100, url: "http://placehold.it/500x500&amp;text=Thumbnail",  weight: 950},
-	  	{item_name: "App template 2", amount: 45, url: "http://placehold.it/500x500&amp;text=Thumbnail",  weight: 350},
-	  	{item_name: "App template 3", amount: 38, url: "http://placehold.it/500x500&amp;text=Thumbnail",  weight: 220},
-	  	{item_name: "App template 1", amount: 100, url: "http://placehold.it/500x500&amp;text=Thumbnail",  weight: 950},
-	  	{item_name: "App template 2", amount: 27, url: "http://placehold.it/500x500&amp;text=Thumbnail",  weight: 180},
-	  	{item_name: "App template 1", amount: 109, url: "http://placehold.it/500x500&amp;text=Thumbnail",  weight: 840},
-	  	{item_name: "App template 2", amount: 41, url: "http://placehold.it/500x500&amp;text=Thumbnail",  weight: 418},
-	  	{item_name: "App template 1", amount: 49, url: "http://placehold.it/500x500&amp;text=Thumbnail",  weight: 567},
-	  	{item_name: "App template 2", amount: 62, url: "http://placehold.it/500x500&amp;text=Thumbnail",  weight: 710},
-	  	{item_name: "App template 1", amount: 46, url: "http://placehold.it/500x500&amp;text=Thumbnail",  weight: 380},
-	  	{item_name: "App template 2", amount: 55, url: "http://placehold.it/500x500&amp;text=Thumbnail",  weight: 412},
-	  	{item_name: "App template 1", amount: 12, url: "http://placehold.it/500x500&amp;text=Thumbnail",  weight: 67},
-	  	{item_name: "App template 2", amount: 131, url: "http://placehold.it/500x500&amp;text=Thumbnail",  weight: 1012}
+    return [
+      {item_name: "App template 0", amount: 25.5, url: "http://placehold.it/500x500&amp;text=Thumbnail", weight: 122},
+      {item_name: "App template 1", amount: 100, url: "http://placehold.it/500x500&amp;text=Thumbnail",  weight: 950},
+      {item_name: "App template 2", amount: 45, url: "http://placehold.it/500x500&amp;text=Thumbnail",  weight: 350},
+      {item_name: "App template 3", amount: 38, url: "http://placehold.it/500x500&amp;text=Thumbnail",  weight: 220},
+      {item_name: "App template 1", amount: 100, url: "http://placehold.it/500x500&amp;text=Thumbnail",  weight: 950},
+      {item_name: "App template 2", amount: 27, url: "http://placehold.it/500x500&amp;text=Thumbnail",  weight: 180},
+      {item_name: "App template 1", amount: 109, url: "http://placehold.it/500x500&amp;text=Thumbnail",  weight: 840},
+      {item_name: "App template 2", amount: 41, url: "http://placehold.it/500x500&amp;text=Thumbnail",  weight: 418},
+      {item_name: "App template 1", amount: 49, url: "http://placehold.it/500x500&amp;text=Thumbnail",  weight: 567},
+      {item_name: "App template 2", amount: 62, url: "http://placehold.it/500x500&amp;text=Thumbnail",  weight: 710},
+      {item_name: "App template 1", amount: 46, url: "http://placehold.it/500x500&amp;text=Thumbnail",  weight: 380},
+      {item_name: "App template 2", amount: 55, url: "http://placehold.it/500x500&amp;text=Thumbnail",  weight: 412},
+      {item_name: "App template 1", amount: 12, url: "http://placehold.it/500x500&amp;text=Thumbnail",  weight: 67},
+      {item_name: "App template 2", amount: 131, url: "http://placehold.it/500x500&amp;text=Thumbnail",  weight: 1012}
 
-  	];
+    ];
 
   }
 
@@ -231,21 +275,10 @@ odio ornare sagittis
 </script>
 
 <script>
-    App.View.render(App.template.cards, App.Data.storage(), $("#Main_view"));
-
-
-
-    	$("li.has-dropdown").on("click", function (e) {
-
-    		var sorter_type = e.target.id;
-    		console.log(sorter_type);
-    		if(App.Data._allowed_sorter_types().indexOf(sorter_type) > -1) {
-    			
-    			App.View.render(App.template.cards, App.Data.sorter(sorter_type), $("#Main_view"));
-    		};
-    		
-    	});
-
+    $(function () {
+      
+      App.init();
+    });
 
 </script>
 
