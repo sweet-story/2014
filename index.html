@@ -293,9 +293,8 @@ odio ornare sagittis
 
       change: function () {
 
-        var url = location.hash || "top",
+        var url = location.hash || "top", // todo alternate URL must be "/"
             route = url.match(/(\w+)/gi)[0],
-            // id = isNaN(parseInt(url.match(/(\w+)/gi)[1])) ? 1 : parseInt(url.match(/(\w+)/gi)[1]);
             id = url.match(/(\w+)/gi)[1];
             App.Router.navigate(route, id);
       },
@@ -348,6 +347,7 @@ odio ornare sagittis
             } catch (err) {
 
               // todo
+              App.Router.set_url("top");
               throw "Error";
               console.log(err);
             }
