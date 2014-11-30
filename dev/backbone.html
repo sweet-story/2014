@@ -1,0 +1,213 @@
+
+<!doctype html>
+<!--[if IE 9]><html class="lt-ie10" lang="en" > <![endif]-->
+<html class="no-js" lang="en" data-useragent="Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; Trident/6.0)">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>local - Foundation Template | Store</title>
+<meta name="description" content="Documentation and reference library for ZURB Foundation. JavaScript, CSS, components, grid and more."/>
+<meta name="author" content="ZURB, inc. ZURB network also includes zurb.com"/>
+
+<meta name="copyright" content="ZURB, inc. Copyright (c) 2014"/>
+<link rel="stylesheet" href="../assets/css/foundation.css"/>
+<link rel="stylesheet" href="../assets/css/custom.css"/>
+<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+<script src="../assets/js/modernizr.js"></script>
+</head>
+  
+
+<body>
+
+<!-- <div id="app"> -->
+
+<div class='thetop'></div>
+<div class="row">
+<div class="large-12 columns">
+ 
+<div class="row">
+<div class="large-12 columns">
+
+<nav class="top-bar" data-topbar role="navigation">
+  <ul class="title-area">
+    <li class="name">
+      <h1><a href="#">My Site</a></h1>
+    </li>
+     <!-- Remove the class "menu-icon" to get rid of menu icon. Take out "Menu" to just have icon alone -->
+    <li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
+  </ul>
+
+  <section class="top-bar-section">
+    <!-- Right Nav Section -->
+    <ul class="right">
+      <li class="active" id="top"><a href="#/top">Популярные</a></li>
+      <li id="cheap"><a href="#/cheap">От дешевых</a></li>
+      <li id="expensive"><a href="#/expensive">От дорогих</a></li>
+      <li id="weight"><a href="#/weight">От тяжелых</a></li>
+    </ul>
+
+    <!-- <dl class="sub-nav right">
+      <dt>Filter:</dt>
+      <dd class="active"><a href="#">All</a></dd>
+      <dd><a href="#">Active</a></dd>
+      <dd><a href="#">Pending</a></dd>
+      <dd><a href="#">Suspended</a></dd>
+    </dl> -->
+
+    <!-- Left Nav Section -->
+    <ul class="left">
+      <li><a href="#">Left Nav Button</a></li>
+    </ul>
+  </section>
+</nav>
+
+</div>
+</div> 
+<div class="row">
+ 
+<!-- <div class="large-4 small-12 columns">
+<img src="http://placehold.it/500x500&amp;text=Logo">
+<div class="hide-for-small panel">
+<h3>Header</h3>
+<h5 class="subheader">Risus ligula, aliquam nec fermentum vitae, sollicitudin eget urna. Donec dignissim
+nibh fermentum odio ornare sagittis.</h5>
+</div><a href="#">
+<div class="panel callout radius">
+<h6>99&nbsp; items in your cart</h6>
+</div></a>
+</div>  -->
+ 
+<div class="large-12 columns">
+
+
+  <div class="row" id="app">
+
+    <!-- <div id="app"></div> -->
+
+  </div>
+
+  <div class="row">
+<div class="large-12 columns">
+<div class="panel">
+<div class="row">
+<div class="large-2 small-6 columns"><img src="http://placehold.it/300x300&amp;text=Site%20Owner"></div>
+<div class="large-10 small-6 columns">
+<strong>This Site Is Managed By</strong>
+<hr>
+Risus ligula, aliquam nec fermentum vitae, sollicitudin eget urna. Donec dignissim nibh fermentum
+odio ornare sagittis
+</div>
+</div>
+</div>
+</div> 
+</div>
+</div>
+</div> 
+
+<footer class="row">
+<div class="large-12 columns">
+<hr>
+<div class="row">
+<div class="large-6 columns">
+<p>© Copyright no one at all. Go to town.</p>
+</div>
+<div class="large-6 columns">
+<ul class="inline-list right">
+<li>
+<a href="#">Link 1</a>
+</li>
+<li>
+<a href="#">Link 2</a>
+</li>
+<li>
+<a href="#">Link 3</a>
+</li>
+<li>
+<a href="#">Link 4</a>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</footer> 
+</div>
+</div>
+
+
+<div class='scrolltop'>
+    <div class='scroll icon'><i class="fa fa-4x fa-angle-up"></i></div>
+</div>
+
+
+
+<div id="background-wallpaper"></div>
+
+</div>
+
+<!-- <script src="assets/js/jquery.js"></script> -->
+
+
+
+
+
+
+
+
+  <!-- Templates -->
+  <script type="text/template" id="test-template">
+
+    
+      <a href="#"><img src={{url}}></a>
+      <div class="panel">
+        <h5>{{title}}</h5>
+        <h6 class="subheader">{{price}} грн.</h6>
+        <h6 class="subheader">{{weight}} грамм.</h6>
+      </div>
+
+
+  </script>
+
+  <script type="text/template" id="item-template">
+
+{{#each [kit]}}
+  {{#if @last}}
+        <div class="large-4 small-6 columns end">
+    {{else}}
+        <div class="large-4 small-6 columns">
+    {{/if}}
+  
+  
+    <a href="#/id/{{id}}"><img src={{url}}></a>
+    <div class="panel">
+      <h5>{{item_name}}</h5>
+      <h6 class="subheader">{{price}} грн.</h6>
+      <h6 class="subheader">{{weight}} грамм.</h6>
+    </div>
+
+  </div>
+{{/each}}
+
+  </script>
+
+
+
+
+
+    <script src="js/jquery.js"></script>
+    <script src="js/json2.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0/handlebars.js"></script>
+    <script src="js/underscore.js"></script>
+    <script src="js/backbone.js"></script>
+    <script src="js/backbone.localStorage.js"></script>
+    <script src="js/todos.js"></script>
+
+    <script src="../assets/js/foundation.min.js"></script>
+    <script>
+      $(document).foundation();
+
+      var doc = document.documentElement;
+      doc.setAttribute('data-useragent', navigator.userAgent);
+    </script>
+
+  </body>
+</html>
