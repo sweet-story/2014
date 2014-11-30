@@ -5,6 +5,11 @@
  *{ 
   font-family:tahoma;
 }
+
+.custom {
+	padding: 0px !important;
+	margin: 0px !important;
+}
 /* .testheight Not required - unless testing ;) */
 .testheight {
   height:1200px;

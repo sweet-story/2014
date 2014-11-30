@@ -199,25 +199,24 @@ odio ornare sagittis
 
 <script id="item-template" type="text/x-handlebars-template">
 
-{{#each [kit]}}  
-    <div class="large-6 columns">
+{{#each [kit]}} 
+    <div class="large-12 columns"> 
+    <div class="large-6 columns" style="margin:0px;padding:0px;"">
       <img src="http://placehold.it/500x500&amp;text=Thumbnail"/>
     </div>
-    <div class="large-6 columns">
+    <div class="large-6 columns custom" style="margin:0px;padding:0px; padding-left:50px;">
       <ul class="pricing-table">
         <li class="title">Standard</li>
         <li class="price">{{price}} грн.</li>
         <li class="description">An awesome description</li>
-        <li class="bullet-item">Бштзге</li>
-        <li class="bullet-item">Бштзге</li>
-        <li class="bullet-item">Бштзге</li>
         <li class="bullet-item">5GB Storage</li>
         <li class="bullet-item">20 Users</li>
         <li class="cta-button"><a class="button" href="#">Buy Now</a><span></span><a class="button" href="#">Buy Now</a></li>
       </ul>
     </div>
+    </div>
 {{/each}}
-    <div class="large-12 columns">
+    <div class="large-12 columns" style="margin-top: 50px;">
     <table>
   <thead>
     <tr>
