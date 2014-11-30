@@ -6,9 +6,8 @@
   font-family:tahoma;
 }
 
-.custom {
-	padding: 0px !important;
-	margin: 0px !important;
+.panel {
+	background-color: #fff !important;
 }
 /* .testheight Not required - unless testing ;) */
 .testheight {
