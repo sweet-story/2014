@@ -250,9 +250,18 @@ odio ornare sagittis
 
  (function( App, $, undefined ) {
 
+  App.Runtime = function () {
+    return {
+      Router: new App.Router(),
+      View: new App.View(),
+      Storage: new App.Storage(),
+      Model: new App.Model()
+    };
+  };
+
   App.init = function () {
 
-    var Router = new App.Router();
+    var Router = App.Runtime().Router;
     Router.onChange();
       
     $(window).on("hashchange", function () {
@@ -264,41 +273,43 @@ odio ornare sagittis
 
   };
 
+
+
+
+
+
   App.Router = function () {
 
-  var routes = ["cheap", "expensive", "weight", "top", "id"];
+    var routes = ["cheap", "expensive", "weight", "top", "id"];
 
-  this.isAllowed = function (route) {
+    this.isAllowed = function (route) {
 
-          var result = routes.indexOf(route) > -1 ? true : false;
-          return result;
-        };
+      var result = routes.indexOf(route) > -1 ? true : false;
+      return result;
+    };
 
     this.navigate = function (route, id) {
-      console.log(route);
+      console.log("navigate", route);
       if(this.isAllowed(route)) {
 
-        var View = new App.View(), Data = new App.Data();
+        var View = App.Runtime().View, Model = App.Runtime().Model;
+
 
         switch (route) {
           case "id": 
-            console.log("route is "+route);
             var id = isNaN(parseInt(id)) ? 1 : parseInt(id);
-            var data = Data.sortBy(route, id);
+            var data = Model.sortBy(route, id);
             console.log(data);
             if(data.sys.status !== "error") {
-              View.render(View.templates.item, Data.sortBy(route, id), View.views.main);
-              console.log(Data.sortBy(route, id));
+              View.render(View.templates.item, Model.sortBy(route, id), View.views.main);
+              console.log(Model.sortBy(route, id));
             } else {
               window.location.hash = "/top";
             }
             break;
 
           default: 
-            console.log("route is "+route);
-            console.log("view is ");
-            console.log(View);
-            View.render(View.templates.items, Data.sortBy(route), View.views.main);
+            View.render(View.templates.items, Model.sortBy(route), View.views.main);
             $(View.views.top_bar).removeClass();
             $("#"+route).addClass("active");
         };
@@ -312,7 +323,7 @@ odio ornare sagittis
         var url = location.hash || "#/top", // todo alternate URL must be "/"
             route = url.match(/(\w+)/gi)[0],
             id = url.match(/(\w+)/gi)[1];
-            console.log(route);
+            console.log("onChange", route);
             this.navigate(route, id);
     };
 
@@ -337,18 +348,101 @@ odio ornare sagittis
       console.log("render started");
       var template = Handlebars.compile(source),
           html = template(data);
-      console.log(template, html, view);
+      // console.log(template, html, view);
       $(view).html(html);
       window.scroll(0,0);
     };
   };
 
+  App.Model = function () {
 
-  App.Data = function () {
+    window.data = App.Storage();
+    // $(data['kit']).each(function (i, v) {
+    //   v.price = (v.price + (v.price * App.Runtime().Settings.profit() /100));
 
-    var storage = function () {
+    // });
 
-      return { kit: [
+    var percent = function () {
+      for (key in data['kit']) {
+        data['kit'][key].price += Math.round(data['kit'][key].price * 30 /100);
+        // console.log(data['kit'][key].price + (data['kit'][key].price * App.Runtime().Settings.profit() /100));
+      }  
+
+    };  
+
+    percent();
+
+    var sorters = {
+
+          expensive: function (data) {
+            var tmp = {};
+            tmp["kit"] = data["kit"].sort(function (a, b) { return b.price - a.price; });
+            tmp.sys = {status: "success"};
+            return tmp;
+            // return App.Data.storage()["kit"].sort(function (a, b) { return b.price - a.price; });
+          },
+
+          cheap: function (data) {
+            var tmp = {};
+            tmp["kit"] = data["kit"].sort(function (a, b) { return b.price - a.price; }).reverse();
+            tmp.sys = {status: "success"};
+            return tmp;
+            // return sorters.expensive().reverse(); 
+          },
+
+          weight: function (data) {
+            var tmp = {};
+            tmp["kit"] = data["kit"].sort(function (a, b) { return b.weight - a.weight; });
+            tmp.sys = {status: "success"};
+            return tmp;
+            // return App.Data.storage()["kit"].sort(function (a, b) { return b.weight - a.weight; });
+          },
+
+          top: function (data) { 
+            var tmp = {};
+            console.log("sorter top started");
+            // return App.Data.storage()["kit"].filter(function (a) { return a.price > 40; });}
+            tmp["kit"] = data["kit"].filter(function (a) { return a.price > 40; });
+            tmp.sys = {status: "success"};
+            return tmp;
+          },
+
+          id: function (data, id) {
+
+            try {
+              var tmp = {};
+              tmp["kit"] = data["kit"].filter(function (o) { return o.id === id });
+              console.log("id is: "+typeof id, id);
+              tmp["candies"] = data["candies"].filter(function (o) { return tmp["kit"][0]["contain"].indexOf(o.id) > -1});
+              tmp.sys = {status: "success"};
+              return tmp;
+
+            } catch (err) {
+
+              // todo
+              //App.Router.set_url("/top");
+              
+              console.log(err);
+              return {sys:{status: "error", descr: "no data for such ID"}};
+            }
+            
+  
+
+          }
+
+    };
+
+    this.sortBy = function (sort_type, id) {
+
+        console.log("sort_type: "+sort_type);
+        console.log(sorters[sort_type](data,id));
+        return sorters[sort_type](data, id);
+    };
+  };
+
+  App.Storage = function () {
+  
+    return { kit: [
         {item_name: "App template 0", id: 1, contain: [1,3,6], price: 25.5, url: "assets/img/kits/1.png", size: "110x110x110", weight: 120,},
         {item_name: "App template 1", id: 2, contain: [3,9],  price: 100, url: "assets/img/kits/2.png", size: "160x190x56", weight: 181},
         {item_name: "App template 2", id: 3, contain: [2,3,5], price: 45, url: "assets/img/kits/3.png", size: "145x218x90", weight: 163},
@@ -389,75 +483,10 @@ odio ornare sagittis
         {item_name: "Candy 1", id: 7, url: "http://placehold.it/250x250&amp;text=Thumbnail", size: "11x11x11", weight: 239}
 
       ]};
-    };
 
-    var tmp = {};
+  };
 
-    var sorters = {
 
-          expensive: function () {
-            tmp["kit"] = storage()["kit"].sort(function (a, b) { return b.price - a.price; });
-            tmp.sys = {status: "success"};
-            return tmp;
-            // return App.Data.storage()["kit"].sort(function (a, b) { return b.price - a.price; });
-          },
-
-          cheap: function () {
-            tmp["kit"] = storage()["kit"].sort(function (a, b) { return b.price - a.price; }).reverse();
-            tmp.sys = {status: "success"};
-            return tmp;
-            // return sorters.expensive().reverse(); 
-          },
-
-          weight: function () {
-            tmp["kit"] = storage()["kit"].sort(function (a, b) { return b.weight - a.weight; });
-            tmp.sys = {status: "success"};
-            return tmp;
-            // return App.Data.storage()["kit"].sort(function (a, b) { return b.weight - a.weight; });
-          },
-
-          top: function () { 
-
-            console.log("sorter top started");
-            // return App.Data.storage()["kit"].filter(function (a) { return a.price > 40; });}
-            tmp["kit"] = storage()["kit"].filter(function (a) { return a.price > 40; });
-            tmp.sys = {status: "success"};
-            return tmp;
-          },
-
-          id: function (id) {
-
-            try {
-
-              tmp["kit"] = storage()["kit"].filter(function (o) { return o.id === id });
-              console.log("id is: "+typeof id, id);
-              tmp["candies"] = storage()["candies"].filter(function (o) { return tmp["kit"][0]["contain"].indexOf(o.id) > -1});
-              tmp.sys = {status: "success"};
-              return tmp;
-
-            } catch (err) {
-
-              // todo
-              //App.Router.set_url("/top");
-              
-              console.log(err);
-              return {sys:{status: "error", descr: "no data for such ID"}};
-            }
-            
-  
-
-          }
-
-    };
-
-    this.sortBy = function (sort_type, id) {
-
-        console.log("sort_type: "+sort_type);
-        console.log(sorters[sort_type](id));
-        return sorters[sort_type](id);
-    };
-
-};
 
 }( window.App = window.App || {}, jQuery ));
 
